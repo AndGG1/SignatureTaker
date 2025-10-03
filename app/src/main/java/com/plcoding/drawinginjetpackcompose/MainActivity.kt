@@ -1,36 +1,28 @@
 package com.plcoding.drawinginjetpackcompose
 
+import DrawingCanvas
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastForEach
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.signaturetaker.DrawingViewModel
 import com.plcoding.drawinginjetpackcompose.ui.theme.DrawingInJetpackComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -50,23 +42,42 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         DrawingCanvas(
+                            viewModel,
                             paths = state.paths,
                             currentPath = state.currentPath,
                             onAction = viewModel::onAction,
                             modifier = Modifier
+                                .fillMaxWidth(0.95f)   // 95% width
+                                .fillMaxHeight(2f / 3f) // 2/3 height
+                        )
+
+                        Row(
+                            modifier = Modifier
                                 .fillMaxWidth()
-                                .weight(1f)
-                        )
-                        CanvasControls(
-                            selectedColor = state.selectedColor,
-                            colors = allColors,
-                            onSelectColor = {
-                                viewModel.onAction(DrawingAction.OnSelectColor(it))
-                            },
-                            onClearCanvas = {
-                                viewModel.onAction(DrawingAction.OnClearCanvasClick)
+                                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Button (
+                                onClick = {viewModel.onClearCanvas()},
+                                shape = RectangleShape,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.48f)
+                                    .fillMaxHeight(1.2f / 3f)
+                            ) {
+                                Text("Resetează")
                             }
-                        )
+
+                            Button (
+                                onClick = {},
+                                shape = RectangleShape,
+                                modifier = Modifier
+                                    .fillMaxWidth(.95f)
+                                    .fillMaxHeight(1.2f / 3f)
+                            ) {
+                                Text("Trimite")
+                            }
+                        }
                     }
                 }
             }
