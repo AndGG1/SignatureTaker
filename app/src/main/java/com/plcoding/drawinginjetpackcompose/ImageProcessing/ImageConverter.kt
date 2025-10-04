@@ -7,7 +7,13 @@ import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.createBitmap
 import com.example.signaturetaker.DrawingViewModel
+import okio.IOException
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
+//Converteaza imaginea intr-un bitmap
+//Intai refacem desenul intr-un alt format si dupa il punem in bitmap
 fun convertToPNG(width: Int, height: Int, viewModel: DrawingViewModel): Bitmap {
     val bitMap = createBitmap(width, height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitMap)
@@ -25,4 +31,31 @@ fun convertToPNG(width: Int, height: Int, viewModel: DrawingViewModel): Bitmap {
     }
 
     return bitMap
+}
+
+//Aici convertam acel bitmap intr-un alt format(File)
+//Cu acest format putem mai departe sa o trimitem intr-un POST request
+fun convertToPart(bitmap: Bitmap): File {
+    val byteOutputStream = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream)
+
+    val byteArr = byteOutputStream.toByteArray()
+    val file = File("Imagine")
+
+    var fos: FileOutputStream? = null
+    try {
+        fos = FileOutputStream(file)
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+
+    try {
+        fos?.write(byteArr)
+        fos?.flush()
+        fos?.close()
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+
+    return file
 }

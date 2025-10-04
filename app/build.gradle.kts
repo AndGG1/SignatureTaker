@@ -46,6 +46,19 @@ composeCompiler {
 }
 
 dependencies {
+    //Networking
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // Gson converter for JSON serialization/deserialization
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // OkHttp core (Retrofit uses OkHttp under the hood)
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+
+    // OkHttp logging interceptor (for request/response logging)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+
+    //Composable
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
 
