@@ -1,0 +1,169 @@
+[33mcommit 114624e1e8adeefca97e7cae4c8259aa99ddc12d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;32morigin/master[m[33m)[m
+Author: Andrei Grebla <andrei.greblaru@gmail.com>
+Date:   Fri Oct 3 21:30:00 2025 +0300
+
+    Optimization to drawing, finished horizontal & vertical interface and other additional changes
+
+[1mdiff --git a/.idea/AndroidProjectSystem.xml b/.idea/AndroidProjectSystem.xml[m
+[1mnew file mode 100644[m
+[1mindex 0000000..4a53bee[m
+[1m--- /dev/null[m
+[1m+++ b/.idea/AndroidProjectSystem.xml[m
+[36m@@ -0,0 +1,6 @@[m
+[32m+[m[32m<?xml version="1.0" encoding="UTF-8"?>[m
+[32m+[m[32m<project version="4">[m
+[32m+[m[32m  <component name="AndroidProjectSystem">[m
+[32m+[m[32m    <option name="providerId" value="com.android.tools.idea.GradleProjectSystem" />[m
+[32m+[m[32m  </component>[m
+[32m+[m[32m</project>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/appInsightsSettings.xml b/.idea/appInsightsSettings.xml[m
+[1mnew file mode 100644[m
+[1mindex 0000000..371f2e2[m
+[1m--- /dev/null[m
+[1m+++ b/.idea/appInsightsSettings.xml[m
+[36m@@ -0,0 +1,26 @@[m
+[32m+[m[32m<?xml version="1.0" encoding="UTF-8"?>[m
+[32m+[m[32m<project version="4">[m
+[32m+[m[32m  <component name="AppInsightsSettings">[m
+[32m+[m[32m    <option name="tabSettings">[m
+[32m+[m[32m      <map>[m
+[32m+[m[32m        <entry key="Firebase Crashlytics">[m
+[32m+[m[32m          <value>[m
+[32m+[m[32m            <InsightsFilterSettings>[m
+[32m+[m[32m              <option name="connection">[m
+[32m+[m[32m                <ConnectionSetting>[m
+[32m+[m[32m                  <option name="appId" value="PLACEHOLDER" />[m
+[32m+[m[32m                  <option name="mobileSdkAppId" value="" />[m
+[32m+[m[32m                  <option name="projectId" value="" />[m
+[32m+[m[32m                  <option name="projectNumber" value="" />[m
+[32m+[m[32m                </ConnectionSetting>[m
+[32m+[m[32m              </option>[m
+[32m+[m[32m              <option name="signal" value="SIGNAL_UNSPECIFIED" />[m
+[32m+[m[32m              <option name="timeIntervalDays" value="THIRTY_DAYS" />[m
+[32m+[m[32m              <option name="visibilityType" value="ALL" />[m
+[32m+[m[32m            </InsightsFilterSettings>[m
+[32m+[m[32m          </value>[m
+[32m+[m[32m        </entry>[m
+[32m+[m[32m      </map>[m
+[32m+[m[32m    </option>[m
+[32m+[m[32m  </component>[m
+[32m+[m[32m</project>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/deploymentTargetSelector.xml b/.idea/deploymentTargetSelector.xml[m
+[1mnew file mode 100644[m
+[1mindex 0000000..b268ef3[m
+[1m--- /dev/null[m
+[1m+++ b/.idea/deploymentTargetSelector.xml[m
+[36m@@ -0,0 +1,10 @@[m
+[32m+[m[32m<?xml version="1.0" encoding="UTF-8"?>[m
+[32m+[m[32m<project version="4">[m
+[32m+[m[32m  <component name="deploymentTargetSelector">[m
+[32m+[m[32m    <selectionStates>[m
+[32m+[m[32m      <SelectionState runConfigName="app">[m
+[32m+[m[32m        <option name="selectionMode" value="DROPDOWN" />[m
+[32m+[m[32m      </SelectionState>[m
+[32m+[m[32m    </selectionStates>[m
+[32m+[m[32m  </component>[m
+[32m+[m[32m</project>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/gradle.xml b/.idea/gradle.xml[m
+[1mnew file mode 100644[m
+[1mindex 0000000..639c779[m
+[1m--- /dev/null[m
+[1m+++ b/.idea/gradle.xml[m
+[36m@@ -0,0 +1,19 @@[m
+[32m+[m[32m<?xml version="1.0" encoding="UTF-8"?>[m
+[32m+[m[32m<project version="4">[m
+[32m+[m[32m  <component name="GradleMigrationSettings" migrationVersion="1" />[m
+[32m+[m[32m  <component name="GradleSettings">[m
+[32m+[m[32m    <option name="linkedExternalProjectsSettings">[m
+[32m+[m[32m      <GradleProjectSettings>[m
+[32m+[m[32m        <option name="testRunner" value="CHOOSE_PER_TEST" />[m
+[32m+[m[32m        <option name="externalProjectPath" value="$PROJECT_DIR$" />[m
+[32m+[m[32m        <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />[m
+[32m+[m[32m        <option name="modules">[m
+[32m+[m[32m          <set>[m
+[32m+[m[32m            <option value="$PROJECT_DIR$" />[m
+[32m+[m[32m            <option value="$PROJECT_DIR$/app" />[m
+[32m+[m[32m          </set>[m
+[32m+[m[32m        </option>[m
+[32m+[m[32m      </GradleProjectSettings>[m
+[32m+[m[32m    </option>[m
+[32m+[m[32m  </component>[m
+[32m+[m[32m</project>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/migrations.xml b/.idea/migrations.xml[m
+[1mnew file mode 100644[m
+[1mindex 0000000..f8051a6[m
+[1m--- /dev/null[m
+[1m+++ b/.idea/migrations.xml[m
+[36m@@ -0,0 +1,10 @@[m
+[32m+[m[32m<?xml version="1.0" encoding="UTF-8"?>[m
+[32m+[m[32m<project version="4">[m
+[32m+[m[32m  <component name="ProjectMigrations">[m
+[32m+[m[32m    <option name="MigrateToGradleLocalJavaHome">[m
+[32m+[m[32m      <set>[m
+[32m+[m[32m        <option value="$PROJECT_DIR$" />[m
+[32m+[m[32m      </set>[m
+[32m+[m[32m    </option>[m
+[32m+[m[32m  </component>[m
+[32m+[m[32m</project>[m
+\ No newline at end of file[m
+[1mdiff --git a/.idea/misc.xml b/.idea/misc.xml[m
+[1mindex b81700b..2cdc89a 100644[m
+[1m--- a/.idea/misc.xml[m
+[1m+++ b/.idea/misc.xml[m
+[36m@@ -1,329 +1,5 @@[m
+ <?xml version="1.0" encoding="UTF-8"?>[m
+ <project version="4">[m
+[31m-  <component name="DeviceStreaming">[m
+[31m-    <option name="deviceSelectionList">[m
+[31m-      <list>[m
+[31m-        <PersistentDeviceSelectionData>[m
+[31m-          <option name="api" value="27" />[m
+[31m-          <option name="brand" value="DOCOMO" />[m
+[31m-          <option name="codename" value="F01L" />[m
+[31m-          <option name="id" value="F01L" />[m
+[31m-          <option name="manufacturer" value="FUJITSU" />[m
+[31m-          <option name="name" value="F-01L" />[m
+[31m-          <option name="screenDensity" value="360" />[m
+[31m-          <option name="screenX" value="720" />[m
+[31m-          <option name="screenY" value="1280" />[m
+[31m-        </PersistentDeviceSelectionData>[m
+[31m-        <PersistentDeviceSelectionData>[m
+[31m-          <option name="api" value="28" />[m
+[31m-          <option name="brand" value="DOCOMO" />[m
+[31m-          <option name="codename" value="SH-01L" />[m
+[31m-          <option name="id" value="SH-01L" />[m
+[31m-          <option name="manufacturer" value="SHARP" />[m
+[31m-          <option name="name" value="AQUOS sense2 SH-01L" />[m
+[31m-          <option name="screenDensity" value="480" />[m
+[31m-          <option name="screenX" value="1080" />[m
+[31m-          <option name="screenY" value="2160" />[m
+[31m-        </PersistentDeviceSelectionData>[m
+[31m-        <PersistentDeviceSelectionData>[m
+[31m-          <option name="api" value="34" />[m
+[31m-          <option name="brand" value="Lenovo" />[m
+[31m-          <option name="codename" value="TB370FU" />[m
+[31m-          <option name="id" value="TB370FU" />[m
+[31m-          <option name="manufacturer" value="Lenovo" />[m
+[31m-          <option name="name" value="Tab P12" />[m
+[31m-          <option name="screenDensity" value="340" />[m
+[31m-          <option name="screenX" value="1840" />[m
+[31m-          <option name="screenY" value="2944" />[m
+[31m-        </PersistentDeviceSelectionData>[m
+[31m-        <PersistentDeviceSelectionData>[m
+[31m-          <option name="api" value="31" />[m
+[31m-          <option name="brand" value="samsung" />[m
+[31m-          <option name="codename" value="a51" />[m
+[31m-          <option name="id" value="a51" />[m
+[31m-          <option name="manufacturer" value="Samsung" />[m
+[31m-          <option name="name" value="Galaxy A51" />[m
+[31m-          <option name="screenDensity" value="420" />[m
+[31m-          <option name="screenX" value="1080" />[m
+[31m-          <option name="screenY" value="2400" />[m
+[31m-        </PersistentDeviceSelectionData>[m
+[31m-        <PersistentDeviceSelectionData>[m
+[31m-          <option name="api" value="34" />[m
+[31m-          <option
