@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.util.fastForEach
 import com.example.signaturetaker.DrawingAction
 import com.example.signaturetaker.DrawingViewModel
@@ -30,6 +31,7 @@ fun DrawingCanvas(
     modifier: Modifier = Modifier
 ) {
     drawingViewModel_t = viewModel
+    onOrientationChanged(viewModel)
 
     Canvas(
         modifier = modifier
@@ -105,4 +107,17 @@ private fun DrawScope.drawPath(
             join = StrokeJoin.Round
         )
     )
+}
+
+@Composable
+private fun onOrientationChanged(viewModel: DrawingViewModel) {
+    val knownOrientation = viewModel.currentScreenOrientation
+    val currOrientation = LocalConfiguration.current.orientation
+
+    if (knownOrientation != currOrientation) {
+        if (knownOrientation != 0) {
+            viewModel.onClearCanvas()
+        }
+        viewModel.currentScreenOrientation = currOrientation
+    }
 }

@@ -35,9 +35,9 @@ sealed interface DrawingAction {
 
 
 class DrawingViewModel: ViewModel() {
-
     private val _state = MutableStateFlow(DrawingState())
     val state = _state.asStateFlow()
+    var currentScreenOrientation = 0
 
     fun onAction(action: DrawingAction) {
         when (action) {

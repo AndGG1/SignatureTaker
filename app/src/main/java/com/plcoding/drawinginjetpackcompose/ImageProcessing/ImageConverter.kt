@@ -7,6 +7,9 @@ import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.createBitmap
 import com.example.signaturetaker.DrawingViewModel
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okio.IOException
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -35,7 +38,7 @@ fun convertToPNG(width: Int, height: Int, viewModel: DrawingViewModel): Bitmap {
 
 //Aici convertam acel bitmap intr-un alt format(File)
 //Cu acest format putem mai departe sa o trimitem intr-un POST request
-fun convertToPart(bitmap: Bitmap): File {
+fun convertToPart(bitmap: Bitmap): MultipartBody.Part {
     val byteOutputStream = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream)
 
@@ -57,5 +60,9 @@ fun convertToPart(bitmap: Bitmap): File {
         e.printStackTrace()
     }
 
-    return file
+    return MultipartBody.Part.createFormData(
+        "Imagine",
+        file.name,
+        RequestBody.create("image/*".toMediaTypeOrNull(),
+            file))
 }
