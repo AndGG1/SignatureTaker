@@ -1,6 +1,8 @@
 package com.plcoding.drawinginjetpackcompose
 
 import DrawingCanvas
+import android.content.res.Resources
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,7 +25,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.signaturetaker.DrawingViewModel
+import com.plcoding.drawinginjetpackcompose.ImageProcessing.useRetrofit
 import com.plcoding.drawinginjetpackcompose.ui.theme.DrawingInJetpackComposeTheme
+import convertToPNG
+import convertToPart
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,8 +76,23 @@ class MainActivity : ComponentActivity() {
                                 Text("Resetează")
                             }
 
-                            Button (
-                                onClick = {},
+                            Button(
+                                onClick = {
+                                    val currentTime = System.currentTimeMillis()
+                                    if (abs(currentTime - viewModel.lastClickedTime) > 1000) {
+                                        viewModel.lastClickedTime = currentTime
+
+                                        val bitmap: Bitmap = convertToPNG(
+                                            Resources.getSystem().displayMetrics.widthPixels,
+                                            Resources.getSystem().displayMetrics.heightPixels,
+                                            viewModel
+                                        )
+
+                                        viewModel.viewModelScope.launch {
+                                            useRetrofit(convertToPart(bitmap))
+                                        }
+                                    }
+                                },
                                 shape = RectangleShape,
                                 modifier = Modifier
                                     .fillMaxWidth(.95f)

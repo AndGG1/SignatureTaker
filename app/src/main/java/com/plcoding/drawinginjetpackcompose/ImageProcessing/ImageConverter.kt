@@ -9,11 +9,8 @@ import androidx.core.graphics.createBitmap
 import com.example.signaturetaker.DrawingViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okio.IOException
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 
 //Converteaza imaginea intr-un bitmap
 //Intai refacem desenul intr-un alt format si dupa il punem in bitmap
@@ -39,30 +36,16 @@ fun convertToPNG(width: Int, height: Int, viewModel: DrawingViewModel): Bitmap {
 //Aici convertam acel bitmap intr-un alt format(File)
 //Cu acest format putem mai departe sa o trimitem intr-un POST request
 fun convertToPart(bitmap: Bitmap): MultipartBody.Part {
+    // Compress bitmap into a byte array
     val byteOutputStream = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream)
-
     val byteArr = byteOutputStream.toByteArray()
-    val file = File("Imagine")
 
-    var fos: FileOutputStream? = null
-    try {
-        fos = FileOutputStream(file)
-    } catch (e: IOException) {
-        e.printStackTrace()
-    }
-
-    try {
-        fos?.write(byteArr)
-        fos?.flush()
-        fos?.close()
-    } catch (e: IOException) {
-        e.printStackTrace()
-    }
+    val requestBody = byteArr.toRequestBody("image/png".toMediaTypeOrNull())
 
     return MultipartBody.Part.createFormData(
-        "Imagine",
-        file.name,
-        RequestBody.create("image/*".toMediaTypeOrNull(),
-            file))
+        name = "Imagine",
+        filename = "image.png",
+        body = requestBody
+    )
 }

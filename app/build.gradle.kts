@@ -46,6 +46,9 @@ composeCompiler {
 }
 
 dependencies {
+    //ViewModel life-cycle scope
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4")
+
     //Networking
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
 
