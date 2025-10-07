@@ -4,6 +4,7 @@ import DrawingCanvas
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -89,7 +90,8 @@ class MainActivity : ComponentActivity() {
                                         )
 
                                         viewModel.viewModelScope.launch {
-                                            useRetrofit(convertToPart(bitmap))
+                                            val URL = useRetrofit(convertToPart(bitmap))
+                                            Log.d("Post", URL)
                                         }
                                     }
                                 },

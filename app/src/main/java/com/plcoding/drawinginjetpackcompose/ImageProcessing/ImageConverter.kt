@@ -44,7 +44,7 @@ fun convertToPart(bitmap: Bitmap): MultipartBody.Part {
     val requestBody = byteArr.toRequestBody("image/png".toMediaTypeOrNull())
 
     return MultipartBody.Part.createFormData(
-        name = "Imagine",
+        name = "file",
         filename = "image.png",
         body = requestBody
     )
