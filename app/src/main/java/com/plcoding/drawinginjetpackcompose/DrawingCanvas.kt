@@ -17,6 +17,7 @@ import androidx.compose.ui.util.fastForEach
 import com.example.signaturetaker.DrawingAction
 import com.example.signaturetaker.DrawingViewModel
 import com.example.signaturetaker.PathData
+import com.plcoding.drawinginjetpackcompose.AlertDialog
 
 //Facem un Canvas care va folosi un pointerInput in Modifier
 //pentru a detecta fiecare miscare, redirectionand pe baza miscarii la

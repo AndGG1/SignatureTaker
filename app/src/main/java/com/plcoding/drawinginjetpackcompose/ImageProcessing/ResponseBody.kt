@@ -5,5 +5,7 @@ data class ResponseBody(
     val filename: String,
     val size: Int,
     val contentType: String,
-    val message: String
+    val message: String,
+    val documentUrl: String,
+    val documentGenerated: Boolean
 )

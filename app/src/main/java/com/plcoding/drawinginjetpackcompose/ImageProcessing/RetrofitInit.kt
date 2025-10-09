@@ -4,7 +4,7 @@ import okhttp3.MultipartBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-suspend fun useRetrofit(convertedImg: MultipartBody.Part): String {
+suspend fun useRetrofit(convertedImg: MultipartBody.Part): ResponseBody {
     val BASE_URL = "https://semnaturi-hwcfa8febvaxfkcp.westeurope-01.azurewebsites.net/"
 
     val retrofit = Retrofit.Builder()
@@ -13,5 +13,5 @@ suspend fun useRetrofit(convertedImg: MultipartBody.Part): String {
         .build()
 
     return retrofit.create(ImageService::class.java)
-        .sendImg(image = convertedImg).url
+        .sendImg(image = convertedImg)
 }

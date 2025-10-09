@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DrawingInJetpackCompose</string>
+    <string name="success">Trimis!\n</string>
+    <string name="respins">Respins!</string>
 </resources>

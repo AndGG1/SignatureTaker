@@ -1,5 +1,8 @@
 package com.example.signaturetaker
 
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -39,7 +42,10 @@ class DrawingViewModel: ViewModel() {
     val state = _state.asStateFlow()
 
     var currentScreenOrientation = 0
-    var lastClickedTime: Long = 0;
+    var lastClickedTime: Long = 0
+
+    var sent = mutableIntStateOf(0)
+
 
     fun onAction(action: DrawingAction) {
         when (action) {
