@@ -1,0 +1,48 @@
+<!-- res/drawable/id_card.xml -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Card background with rounded corners -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M4,6
+                          h16
+                          a2,2 0 0 1 2,2
+                          v8
+                          a2,2 0 0 1 -2,2
+                          h-16
+                          a2,2 0 0 1 -2,-2
+                          v-8
+                          a2,2 0 0 1 2,-2
+                          z" />
+
+    <!-- Head -->
+    <path
+        android:fillColor="#DDE6FF"
+        android:pathData="M8,9
+                          m-2,0
+                          a2,2 0 1,0 4,0
+                          a2,2 0 1,0 -4,0" />
+
+    <!-- Body directly under head -->
+    <path
+        android:fillColor="#DDE6FF"
+        android:pathData="M5,12.95
+                          a3,2 0 0 1 6,0
+                          v2
+                          h-6
+                          z" />
+
+    <!-- Name line -->
+    <path
+        android:fillColor="#DDE6FF"
+        android:pathData="M13,9 h7 v2 h-7 z" />
+
+    <!-- Secondary line -->
+    <path
+        android:fillColor="#DDE6FF"
+        android:pathData="M13,12 h5 v2 h-5 z" />
+</vector>

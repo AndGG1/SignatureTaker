@@ -1,24 +1,34 @@
 package com.plcoding.drawinginjetpackcompose
 
 import DrawingCanvas
+import android.app.Activity
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -43,6 +54,17 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 class MainActivity : ComponentActivity() {
+    val REQUEST_CODE: Int = 13
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            val cameraImage: Bitmap = data?.extras?.get("data") as Bitmap
+            Log.d("Image", cameraImage.toString())
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -77,7 +99,7 @@ class MainActivity : ComponentActivity() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Button (
-                                onClick = {viewModel.onClearCanvas()},
+                                onClick = {switchToCamera()},
                                 shape = RectangleShape,
                                 modifier = Modifier
                                     .fillMaxWidth(0.48f)
@@ -115,15 +137,44 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        Row(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically) {
+                        Spacer(Modifier.height(16.dp))
 
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                // Left spacer to balance the center alignment
+                                Spacer(modifier = Modifier.width(85.dp)) // adjust width to match button size
+                                Log.d("Culoare", MaterialTheme.colorScheme.primary.value.toString())
+                                // Centered dialogs
+                                Box(
+                                    modifier = Modifier.weight(1f),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    AlertDialog(viewModel)
+                                    AlertDialog_2(viewModel)
+                                }
 
-                            AlertDialog(viewModel)
-                            AlertDialog_2(viewModel)
+                                // Button aligned to the right
+                                AndroidView(
+                                    factory = { context ->
+                                        Button(context).apply {
+                                            background = ContextCompat.getDrawable(
+                                                context,
+                                                R.drawable.whole_button_drawing
+                                            )
+                                            scaleX = .65f
+                                        }
+                                    })
+                            }
                         }
                     }
                 }
@@ -138,7 +189,7 @@ fun AlertDialog(viewModel: DrawingViewModel) {
         AndroidView(
             factory = { context ->
                 TextView(context).apply {
-                    text = "Success!"
+                    text = "Trimis!"
                     background = ContextCompat.getDrawable(
                         context,
                         R.drawable.success_drawable
@@ -184,4 +235,10 @@ fun AlertDialog_2(viewModel: DrawingViewModel) {
             }
         }
     )
+}
+
+//TODO: Finish
+fun switchToCamera() {
+    val cameraIntent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+    startActivityForResult(cameraIntent, 10, null)
 }
