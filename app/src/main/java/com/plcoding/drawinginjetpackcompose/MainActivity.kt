@@ -1,7 +1,6 @@
 package com.plcoding.drawinginjetpackcompose
 
 import DrawingCanvas
-import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
@@ -28,7 +27,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,33 +36,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.signaturetaker.DrawingViewModel
 import com.plcoding.drawinginjetpackcompose.Animation.Animator
-import com.plcoding.drawinginjetpackcompose.ImageProcessing.ResponseBody
+import com.plcoding.drawinginjetpackcompose.ImageProcessing.UploadResponse
 import com.plcoding.drawinginjetpackcompose.ImageProcessing.useRetrofit
 import com.plcoding.drawinginjetpackcompose.ui.theme.DrawingInJetpackComposeTheme
 import convertToPNG
 import convertToPart
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import kotlin.math.abs
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 class MainActivity : ComponentActivity() {
     val REQUEST_CODE: Int = 13
+    var drViewModel: DrawingViewModel? = null
+
+    fun switchToCamera(viewModel: DrawingViewModel) {
+        val cameraIntent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(cameraIntent, 13, null)
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             val cameraImage: Bitmap = data?.extras?.get("data") as Bitmap
-            Log.d("Image", cameraImage.toString())
+            drViewModel?.id_card_image = cameraImage
         }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -74,6 +82,8 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val viewModel = viewModel<DrawingViewModel>()
                     val state by viewModel.state.collectAsStateWithLifecycle()
+
+                    drViewModel = viewModel
 
                     Column(
                         modifier = Modifier
@@ -99,7 +109,7 @@ class MainActivity : ComponentActivity() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Button (
-                                onClick = {switchToCamera()},
+                                onClick = {viewModel.onClearCanvas()},
                                 shape = RectangleShape,
                                 modifier = Modifier
                                     .fillMaxWidth(0.48f)
@@ -114,17 +124,33 @@ class MainActivity : ComponentActivity() {
                                     if (abs(currentTime - viewModel.lastClickedTime) > 1000) {
                                         viewModel.lastClickedTime = currentTime
 
-                                        val bitmap: Bitmap = convertToPNG(
-                                            Resources.getSystem().displayMetrics.widthPixels,
-                                            Resources.getSystem().displayMetrics.heightPixels,
-                                            viewModel
-                                        )
+                                        if (viewModel.id_card_image != null && !viewModel.state.value.paths.isEmpty()) {
+                                            viewModel.viewModelScope.launch {
 
-                                        viewModel.viewModelScope.launch {
-                                            val resp: ResponseBody =
-                                                useRetrofit(convertToPart(bitmap))
+                                            val bitmap: Bitmap = convertToPNG(Resources.getSystem().displayMetrics.widthPixels,
+                                                Resources.getSystem().displayMetrics.heightPixels * 2 / 3,
+                                                viewModel
+                                            )
 
-                                            viewModel.sent.intValue = if (resp.documentGenerated) 1 else -1
+                                                val uid: String = Uuid.random().toString()
+                                                val part1 = convertToPart(bitmap, true, uid)
+                                                val part2 =
+                                                    convertToPart(viewModel.id_card_image!!, false, uid)
+                                                val images = ArrayList<MultipartBody.Part>()
+                                                images.addAll(listOf(part2, part1))
+
+                                                val resp: UploadResponse = useRetrofit(images)
+                                                var intResp = 1
+                                                resp.results.forEach { resp ->
+                                                    if (!resp.message.contains("File uploaded successfully"))
+                                                        intResp = -1
+                                                    Log.d("link", "$resp")
+                                                }
+
+                                                viewModel.sent.intValue = intResp
+                                            }
+                                        } else {
+                                            viewModel.sent.intValue = -1
                                         }
                                     }
                                 },
@@ -153,7 +179,7 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 // Left spacer to balance the center alignment
                                 Spacer(modifier = Modifier.width(85.dp)) // adjust width to match button size
-                                Log.d("Culoare", MaterialTheme.colorScheme.primary.value.toString())
+
                                 // Centered dialogs
                                 Box(
                                     modifier = Modifier.weight(1f),
@@ -172,6 +198,9 @@ class MainActivity : ComponentActivity() {
                                                 R.drawable.whole_button_drawing
                                             )
                                             scaleX = .65f
+                                            setOnClickListener { v ->
+                                                switchToCamera(viewModel)
+                                            }
                                         }
                                     })
                             }
@@ -235,10 +264,4 @@ fun AlertDialog_2(viewModel: DrawingViewModel) {
             }
         }
     )
-}
-
-//TODO: Finish
-fun switchToCamera() {
-    val cameraIntent: Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-    startActivityForResult(cameraIntent, 10, null)
 }

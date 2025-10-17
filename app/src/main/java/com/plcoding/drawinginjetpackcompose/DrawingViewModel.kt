@@ -1,5 +1,6 @@
 package com.example.signaturetaker
 
+import android.graphics.Bitmap
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -36,10 +37,10 @@ sealed interface DrawingAction {
 }
 
 
-
 class DrawingViewModel: ViewModel() {
     private val _state = MutableStateFlow(DrawingState())
     val state = _state.asStateFlow()
+    var id_card_image: Bitmap? = null
 
     var currentScreenOrientation = 0
     var lastClickedTime: Long = 0

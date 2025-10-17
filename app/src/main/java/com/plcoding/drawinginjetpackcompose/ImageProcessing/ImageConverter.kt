@@ -35,17 +35,18 @@ fun convertToPNG(width: Int, height: Int, viewModel: DrawingViewModel): Bitmap {
 
 //Aici convertam acel bitmap intr-un alt format(File)
 //Cu acest format putem mai departe sa o trimitem intr-un POST request
-fun convertToPart(bitmap: Bitmap): MultipartBody.Part {
+fun convertToPart(bitmap: Bitmap, v: Boolean, uid: String): MultipartBody.Part {
     // Compress bitmap into a byte array
     val byteOutputStream = ByteArrayOutputStream()
     bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream)
     val byteArr = byteOutputStream.toByteArray()
 
-    val requestBody = byteArr.toRequestBody("image/png".toMediaTypeOrNull())
+    val choose: String = if (v) "png" else "jpg"
+    val requestBody = byteArr.toRequestBody("image/$choose".toMediaTypeOrNull())
 
     return MultipartBody.Part.createFormData(
-        name = "file",
-        filename = "image.png",
+        name = "files",
+        filename = if (v) "{$uid}-semnatura.png" else "{$uid}-buletin.jpg",
         body = requestBody
     )
 }

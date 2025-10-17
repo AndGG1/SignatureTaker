@@ -7,8 +7,8 @@ import retrofit2.http.Part
 
 interface ImageService {
     @Multipart
-    @POST("api/files/upload")
+    @POST("/api/files/upload/batch")
     suspend fun sendImg(
-        @Part image: MultipartBody.Part
-    ) : ResponseBody
+        @Part images: List<MultipartBody.Part>
+    ) : UploadResponse
 }
